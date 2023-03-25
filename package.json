@@ -1,0 +1,22 @@
+{
+  "name": "autogit",
+  "version": "1.0.0",
+  "description": "Auto git puller",
+  "main": "./src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "rexulec",
+  "license": "ISC",
+  "dependencies": {
+    "@octokit/rest": "^19.0.7",
+    "browserify-fs": "^1.0.0",
+    "consola": "^2.15.3",
+    "cross-spawn": "^7.0.3",
+    "debug": "^4.3.4",
+    "dotenv": "^16.0.3",
+    "get-os-name": "^1.0.3",
+    "octokit": "^2.0.14",
+    "os-name": "^5.1.0"
+  }
+}
