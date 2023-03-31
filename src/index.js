@@ -14,13 +14,16 @@ const octokit = new Octokit({
 let configsheme = {
   "lastestsha": ""
 }
-
 consola.info("AutoGit 1.0.0 Started...");
 
+// If you are using an ENTERPRICE ACCOUNT ON GITHUB, you can comment this 4 line.
 if(process.env.INTERVAL<5000){
-  consola.error("We don't recommend to use less than 5 seconds interval (Ratelimit - 1000req/hour). Please change it in .env file. If you are using an ENTERPRICE ACCOUNT ON GITHUB, you can comment this 3 line.");
+  consola.error("We don't recommend to use less than 5 seconds interval (Ratelimit - 1000req/hour). Please change it in .env file. If you are using an ENTERPRICE ACCOUNT ON GITHUB, you can comment this 4 line.");
   process.exit(1);
 }
+// If you are using an ENTERPRICE ACCOUNT ON GITHUB, you can comment this 4 line.
+
+main();
 
 function main() {
   var start = new Date().getTime();
