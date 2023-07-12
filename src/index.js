@@ -1,16 +1,17 @@
 const fs = require('fs');
-const pull = require('../util/pull.js');
+const {pull} = require('../util/pull.js');
 const {createLog} = require('../util/createLog.js');
 require('dotenv').config()
 const fastify = require('fastify')();
 
 fastify.post('/webhook', async (request, reply) => {
   const payload = request.body;
-  if (payload.ref === 'refs/heads/master') {
+  console.log('Received webhook payload:', payload.ref);
+  if (payload.ref === 'refs/heads/main') {
     createLog('WEBHOOK', 'Received push event to master branch');
     pull(process.env.LOCAL_PATH);
   }
-  console.log('Received webhook payload:', payload);
+  //console.log('Received webhook payload:', payload);
   reply.send({ received: true });
 });
 
