@@ -10,7 +10,7 @@ const pull = (path) =>
     //execSync(location, { encoding: 'utf-8' }) 
     exec(location, (err, stdout, stderr) => {
       if (stderr.includes('error:')) {
-        createLog('ERROR', "Error pulling from git");
+        createLog('ERROR', "Error while pulling from git\n\n" + stderr, true);
       } else {
         createLog('SUCCESS', stdout);
       }
