@@ -1,8 +1,9 @@
-const { cyan, yellow } = require('colorette');
+const { cyan, yellow, bgRed } = require('colorette');
 
-const createLog = (title, message) => 
+const createLog = (title, message, error) => 
 {
-    console.log(`[ ${cyan(title)} ] --> ${yellow(message)}`);
+    const errorText = error ? bgRed(`[ ${title} ]`) : `[ ${cyan(title)} ]`;
+    console.log(`${errorText} --> ${yellow(message)}`);
 };
 
 module.exports = {createLog};
