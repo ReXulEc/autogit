@@ -2,7 +2,11 @@ require('dotenv').config()
 const fastify = require('fastify')();
 const { createLog } = require('../util/createLog.js');
 const { pull } = require('../util/pull.js');
-const {handleSignature} = require('../util/verifySignature.js');
+const { handleSignature } = require('../util/verifySignature.js');
+const { createSecret } = require('../util/createSecret.js');
+const { checkEnv } = require('../util/checkEnv.js');
+
+checkEnv();
 
 fastify.post('/webhook', async (request, reply) => {
     if (handleSignature(request, request.headers) === false) {
@@ -25,7 +29,6 @@ fastify.post('/webhook', async (request, reply) => {
       pull(process.env.LOCAL_PATH)
     }
   };
-  //console.log('Received webhook payload:', payload);
   reply.send({ received: true });
 });
 
