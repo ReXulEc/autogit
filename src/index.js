@@ -44,11 +44,10 @@ fastify.post('/webhook', async (request, reply) => {
   if (payload?.commits) {
     if (branchCheck().success === true) {
       createLog('WEBHOOK', 'Received push event to ' + branchCheck().branch + ' branch');
-      pull(process.env.LOCAL_PATH)
-      runScript();
-    }
-  };
+        await pull(process.env.LOCAL_PATH)
+    };
   reply.send({ received: true });
+  }
 });
 
 
