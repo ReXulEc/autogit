@@ -1,6 +1,7 @@
 const execSync = require('child_process').execSync;
 const { exec, spawn } = require('node:child_process');
 const { createLog } = require('./createLog.js');
+const { runScript } = require('./runScript.js');
 
 
 const pull = (path) => 
@@ -13,6 +14,8 @@ const pull = (path) =>
         createLog('ERROR', "Error while pulling from git\n\n" + stderr, true);
       } else {
         createLog('SUCCESS', stdout);
+        runScript();
+
       }
     });
   }
