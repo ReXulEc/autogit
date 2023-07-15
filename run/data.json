@@ -1,0 +1,4 @@
+[
+    "npm --prefix ..\\testpath\\ run build",
+    "pm2 restart 1"
+]
