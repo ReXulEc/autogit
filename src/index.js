@@ -1,11 +1,29 @@
 require('dotenv').config()
+const ngrok = require('ngrok');
 const fastify = require('fastify')();
 const { createLog } = require('../util/createLog.js');
 const { pull } = require('../util/pull.js');
 const { handleSignature } = require('../util/verifySignature.js');
-const { createSecret } = require('../util/createSecret.js');
 const { checkEnv } = require('../util/checkEnv.js');
+const { runScript } = require('../util/runScript.js');
+const PORT = +process.env.PORT || 3000;
+const argv = require('minimist')(process.argv.slice(2));
 
+if(argv.devScript === "true") {
+  (async function() {
+    await ngrok.connect({
+      addr: PORT, // port or network address, defaults to 80
+      region: process.env.NGROK_REGION, // one of ngrok regions (us, eu, au, ap, sa, jp, in), defaults to us
+      onStatusChange: status => {createLog("NGROK STATUS", status.charAt(0).toUpperCase() + status.slice(1))}, // 'closed' - connection is lost, 'connected' - reconnected
+      onLogEvent: data => {
+        if(data.includes("url")) {
+          let url = data.split(" ")[data.split(" ").length -1].slice(4)
+          createLog("NGROK", `Ngrok is running on ${url}`)
+        }
+      },
+    });
+  })();
+}
 checkEnv();
 
 fastify.post('/webhook', async (request, reply) => {
@@ -27,12 +45,12 @@ fastify.post('/webhook', async (request, reply) => {
     if (branchCheck().success === true) {
       createLog('WEBHOOK', 'Received push event to ' + branchCheck().branch + ' branch');
       pull(process.env.LOCAL_PATH)
+      runScript();
     }
   };
   reply.send({ received: true });
 });
 
-const PORT = +process.env.PORT || 3000;
 
 fastify.listen(
   {
