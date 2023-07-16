@@ -74,9 +74,6 @@ fs.readFile(process.env.DATA_PATH, 'utf8', (err, content) => {
           }
         },
       );
-    } else
-    {
-      createLog('ERROR', 'Error occured while checking the environment variables.');
     }
   })
 
