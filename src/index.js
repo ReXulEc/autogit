@@ -1,13 +1,14 @@
 require('dotenv').config()
 const ngrok = require('ngrok');
 const fastify = require('fastify')();
+const fs = require('fs');
 const { createLog } = require('../util/createLog.js');
 const { pull } = require('../util/pull.js');
 const { handleSignature } = require('../util/verifySignature.js');
 const { checkEnv } = require('../util/checkEnv.js');
-const { runScript } = require('../util/runScript.js');
 const PORT = +process.env.PORT || 3000;
 const argv = require('minimist')(process.argv.slice(2));
+let startTime = process.hrtime();
 
 if(argv.devScript === "true") {
   (async function() {
@@ -24,7 +25,7 @@ if(argv.devScript === "true") {
     });
   })();
 }
-checkEnv();
+
 
 fastify.post('/webhook', async (request, reply) => {
     if (handleSignature(request, request.headers) === false) {
@@ -50,17 +51,33 @@ fastify.post('/webhook', async (request, reply) => {
   }
 });
 
-
-fastify.listen(
-  {
-    port: PORT,
-    host: '0.0.0.0',
-  },
-  (err) => {
-    if (err) {
-      createLog('ERROR', err.message);
-    } else {
-      createLog('SERVER', `Server is running on port ${PORT}`);
+fs.readFile(process.env.DATA_PATH, 'utf8', (err, content) => {
+  if (err) {
+    checkEnv(err, false);
+  }
+  const jsonData = JSON.parse(content);
+  checkEnv(jsonData, true).then((output) => {
+    if(output === true) {
+      fastify.listen(
+        {
+          port: PORT,
+          host: '0.0.0.0',
+        },
+        (err) => {
+          if (err) {
+            createLog('ERROR', err.message);
+          } else {
+            createLog('SERVER', `Server is running on port ${PORT}`);
+            let endTime = process.hrtime(startTime);
+            let duration = endTime[0] * 1000 + endTime[1] / 1000000;
+            createLog('SERVER', `Server started in ${duration.toFixed(3)}ms`);
+          }
+        },
+      );
+    } else
+    {
+      createLog('ERROR', 'Error occured while checking the environment variables.');
     }
-  },
-);
+  })
+
+})
