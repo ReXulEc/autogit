@@ -1,4 +1,5 @@
 require('dotenv').config()
+const fs = require('fs');
 const {createSecret} = require('./createSecret.js');
 const {createLog} = require('./createLog.js');
 let error = false;
@@ -27,9 +28,18 @@ const envvalues = {
             error = true;
         }
     },
+    DATA_FILE: {
+        ifval: undefined,
+        ifcondition: false,
+        run: function () {
+            createLog('ERROR', 'Data file or configuration is not valid.', true)
+            error = true;
+        }
+    }, 
 }
 
-const checkEnv = () => {
+const checkEnv = (dataJson, success) => {
+    envvalues.DATA_FILE.ifval = dataJson.length >= 0 && success === true && dataJson.length < 9 && Array.isArray(dataJson);
     for (const [key, value] of Object.entries(envvalues)) {
         if(value.ifval === value.ifcondition) {
             value.run();
@@ -37,6 +47,8 @@ const checkEnv = () => {
     }
     if(error === true) {
         process.exit(1);
+    } else {
+        return Promise.resolve(true);
     }
 }
 
