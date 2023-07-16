@@ -34,5 +34,3 @@ async function runCommands(commands) {
 }
 
 module.exports = {runScript}
-
-// Komutları yürütme işlemini başlat
