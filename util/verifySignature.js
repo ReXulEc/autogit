@@ -2,7 +2,7 @@ require('dotenv').config()
 const crypto = require('crypto');
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
-const verify_signature = (req, reqheaders) => {
+const verify_signature = (req) => {
     const signature = crypto
         .createHmac("sha256", WEBHOOK_SECRET)
         .update(JSON.stringify(req.body))
