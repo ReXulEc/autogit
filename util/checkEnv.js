@@ -1,7 +1,7 @@
 require('dotenv').config()
 const fs = require('fs');
-const {createSecret} = require('./createSecret.js');
-const {createLog} = require('./createLog.js');
+const { createSecret } = require('./createSecret.js');
+const { createLog } = require('./createLog.js');
 let error = false;
 
 const envvalues = {
@@ -13,7 +13,7 @@ const envvalues = {
         }
     },
     BRANCH: {
-        ifval: process.env.BRANCH.length > 0,
+        ifval: undefined,
         ifcondition: false,
         run: function () {
             createLog('ERROR', 'Branch is not valid. You need to change in the .env.', true)
@@ -21,7 +21,7 @@ const envvalues = {
         }
     },
     LOCAL_PATH: {
-        ifval: process.env.LOCAL_PATH.length > 0 && process.env.LOCAL_PATH.includes('\\'),
+        ifval: undefined,
         ifcondition: false,
         run: function () {
             createLog('ERROR', 'Local Path is not valid. You need to change in the .env.', true)
@@ -35,17 +35,35 @@ const envvalues = {
             createLog('ERROR', 'Data file or configuration is not valid.', true)
             error = true;
         }
-    }, 
+    },
 }
 
 const checkEnv = (dataJson, success) => {
-    envvalues.DATA_FILE.ifval = dataJson.length >= 0 && success === true && dataJson.length < 9 && Array.isArray(dataJson);
+    if (!success) {
+        createLog('ERROR', 'Error while reading data file.', true)
+        error = true;
+    }
+    for (const repo of dataJson.listen) {
+        if (repo.branch) {
+            if (envvalues.BRANCH.ifval !== false) envvalues.BRANCH.ifval = true;
+        } else envvalues.BRANCH.ifval = false;
+
+        if (repo.path.length > 0 && repo.path.includes('\\')) {
+            if (envvalues.LOCAL_PATH.ifval !== false) envvalues.LOCAL_PATH.ifval = true;
+        } else envvalues.LOCAL_PATH.ifval = false;
+
+
+        if (dataJson.listen.length > 0 && success === true && Object.keys(repo).length === 4) {
+            if (envvalues.DATA_FILE.ifval !== false) envvalues.DATA_FILE.ifval = true;
+        } else envvalues.DATA_FILE.ifval = false;
+
+    }
     for (const [key, value] of Object.entries(envvalues)) {
-        if(value.ifval === value.ifcondition) {
+        if (value.ifval === value.ifcondition) {
             value.run();
         }
     }
-    if(error === true) {
+    if (error) {
         process.exit(1);
     } else {
         return Promise.resolve(true);
