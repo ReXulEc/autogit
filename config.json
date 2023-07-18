@@ -1,0 +1,21 @@
+{
+    "listen": [
+        {
+            "git": "ReXulEc/testingtgesst",
+            "path": "..\\testingtgesst\\",
+            "branch": "main",
+            "scripts": [
+                "npm --prefix ..\\testpath\\ run build",
+                "pm2 restart 1"
+            ]
+        },
+        {
+            "git": "ReXulEc/testimngv2",
+            "path": "..\\testimngv2\\",
+            "branch": "main",
+            "scripts": [
+                "echo v2"
+            ]
+        }
+    ]
+}
